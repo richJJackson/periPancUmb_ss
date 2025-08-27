@@ -44,8 +44,6 @@ dt_borrow$alpha_prior_sd <- sd_alp
 borrow_fit <- sampling(model,dt_borrow,iter=10000,chains=4,warmup=2000,thin=2)
 print(borrow_fit)
 
-dt_borrow
-
 ### dist of intercept and efficacy parameters from basic and borrowed models
 
 basic_param <- extract(basic_fit)
