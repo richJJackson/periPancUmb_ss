@@ -142,8 +142,22 @@ postEval <- function(trRes,b=0){
 }
 
 
+#### Recruitment Estimate
+library(toolsRJJ)
+
+nSite <- 16
+rpm <- 0.62
+openRate <- 2
+maxTime <- 30
+penal <- 0.5
+
+rec.forcast(nSite,rpm,openRate,maxTime,penal)
 
 
+0.67*12
+0.5*12
+
+(0.67*12+0.5*4)/16
 
 
 
