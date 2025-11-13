@@ -20,6 +20,7 @@ delta <- 0.175
 N<-250
 nsim <- 10000
 simRes <-  NULL
+trl.alloc <- NULL
 
 pb = txtProgressBar(min = 0, max = nsim, initial = 0) 
 
@@ -33,6 +34,8 @@ for(k in 1:nsim){
   
   ### sample rates of eligibility for each asset
   ### NB asset1 - cohort 2; asset 2 - cohort 3 and asset 3 - cohort 1 in the application
+  
+  ### Estimating allocations from negative binomial
   asset1 <- rbinom(N,1,0.25)
   asset2 <- rbinom(N,1,0.5)
   asset3 <- rbinom(N,1,0.95)
@@ -46,9 +49,15 @@ for(k in 1:nsim){
   ## Creating data base
   data <- data.frame("ID"=1:N,asset1,asset2,asset3,trial)
 
-  ### allocating patietns on a 1:2 basis
-  data$alloc <- round(runif(N,0.25,1))
+  ## saving the number of patients allocated into each cohort  
+  trl <- table(data$trial)
+  trl.alloc <- rbind(trl.alloc,trl)
   
+  ### allocating patients on a 1:2 basis
+  als <- c(rep(0,N/3),rep(1,2*N/3),1)
+  #data$alloc <- round(runif(N,0.25,1))
+  data$alloc <-   als[sample(250,250,replace=F)]
+
   ## Simulating binary outcome
   data$lp <- baseR + data$alloc*delta
   data$out <- rbinom(N,1,data$lp)
@@ -98,9 +107,12 @@ lap_borrow <- lapply(simRes,function(x) as.numeric(x$borrow[,4]>0.9))
 direct_res <- Reduce("rbind",lap_direct);direct_res
 borrow_res <- Reduce("rbind",lap_borrow)
 
+
 ### Power Estimates
 colSums(direct_res)/nsim
 colSums(borrow_res)/nsim
+
+colMeans(trl.alloc)
 
 
 
@@ -152,12 +164,5 @@ maxTime <- 30
 penal <- 0.5
 
 rec.forcast(nSite,rpm,openRate,maxTime,penal)
-
-
-0.67*12
-0.5*12
-
-(0.67*12+0.5*4)/16
-
 
 
